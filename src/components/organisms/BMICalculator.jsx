@@ -158,15 +158,54 @@ const BMICalculator = () => {
         setErrors({});
     };
 
-    const handleReset = () => {
-        setHeight('');
-        setWeight('');
-        setHeightFeet('');
-        setHeightInches('');
-        setBmi(null);
-        setCategory('');
+const handleSeeResult = async () => {
+        if (!isValidInput()) {
+            toast.error('Please enter valid height and weight values');
+            return;
+        }
+
+        setLoading(true);
         setErrors({});
-        toast.success('Calculator reset successfully');
+
+        try {
+            let heightInCm, weightInKg;
+
+            if (unit === 'metric') {
+                heightInCm = parseFloat(height);
+                weightInKg = parseFloat(weight);
+            } else {
+                // Convert imperial to metric
+                const totalInches = parseFloat(heightFeet) * 12 + parseFloat(heightInches);
+                heightInCm = totalInches * 2.54;
+                weightInKg = parseFloat(weight) * 0.453592;
+            }
+
+            const calculation = {
+                height: heightInCm,
+                weight: weightInKg,
+                unit,
+                timestamp: new Date()
+            };
+
+            const result = await bmiService.create(calculation);
+            setBmi(result.bmi);
+            setCategory(result.category);
+
+            // Save preferences
+            await userPreferencesService.create({
+                defaultUnit: unit,
+                savedHeight: unit === 'metric' ? heightInCm : (parseFloat(heightFeet) * 12 + parseFloat(heightInches)),
+                theme: 'light'
+            });
+
+            toast.success('BMI calculated successfully!');
+
+        } catch (error) {
+            setErrors({ general: error.message });
+            toast.error('Failed to calculate BMI. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const BMICategories = [
@@ -251,15 +290,16 @@ const BMICalculator = () => {
                         </div>
                     </FormField>
 
-                    {/* Reset Button */}
+{/* See Result Button */}
                     <Button
-                        onClick={handleReset}
-                        className="w-full bg-accent text-gray-700 py-4 rounded-xl font-medium shadow-soft hover:shadow-glow transition-all duration-200 flex items-center justify-center gap-2"
+                        onClick={handleSeeResult}
+                        disabled={loading}
+                        className="w-full bg-accent text-gray-700 py-4 rounded-xl font-medium shadow-soft hover:shadow-glow transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        <ApperIcon name="RotateCcw" size={20} />
-                        Reset Calculator
+                        <ApperIcon name="Calculator" size={20} />
+                        {loading ? 'Calculating...' : 'See Result'}
                     </Button>
                 </motion.div>
 
