@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import react-toastify CSS */
+@import 'react-toastify/dist/ReactToastify.css';
+
+/* Ensure scrollbars are visible */
+body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background-color: #FAFAFA;
+}
+
+/* Prevent horizontal overflow */
+* {
+  max-width: 100%;
+}
+
+/* Main content areas must allow scroll */
+.main-content {
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* Floating label animation */
+.floating-label {
+  position: absolute;
+  left: 12px;
+  top: 16px;
+  color: #9CA3AF;
+  transition: all 200ms ease-out;
+  pointer-events: none;
+  background: #FFF8DC;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+.floating-label.active {
+  top: -8px;
+  font-size: 12px;
+  color: #87CEEB;
+  font-weight: 500;
+}
+
+/* Input focus glow effect */
+.input-glow:focus {
+  box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
+}
+
+/* Number input animations */
+.bmi-number {
+  font-variant-numeric: tabular-nums;
+  transition: all 300ms ease-out;
+}
+
+/* Toggle switch animations */
+.toggle-slider {
+  transition: transform 200ms ease-out;
+}
+
+.toggle-slider.active {
+  transform: translateX(100%);
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

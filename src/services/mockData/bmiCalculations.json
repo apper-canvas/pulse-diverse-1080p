@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "height": 175,
+    "weight": 70,
+    "unit": "metric",
+    "bmi": 22.9,
+    "category": "Normal",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  },
+  {
+    "id": 2,
+    "height": 68,
+    "weight": 150,
+    "unit": "imperial",
+    "bmi": 22.8,
+    "category": "Normal",
+    "timestamp": "2024-01-14T15:45:00.000Z"
+  },
+  {
+    "id": 3,
+    "height": 180,
+    "weight": 85,
+    "unit": "metric",
+    "bmi": 26.2,
+    "category": "Overweight",
+    "timestamp": "2024-01-13T09:20:00.000Z"
+  },
+  {
+    "id": 4,
+    "height": 65,
+    "weight": 120,
+    "unit": "imperial",
+    "bmi": 20.0,
+    "category": "Normal",
+    "timestamp": "2024-01-12T14:15:00.000Z"
+  },
+  {
+    "id": 5,
+    "height": 160,
+    "weight": 55,
+    "unit": "metric",
+    "bmi": 21.5,
+    "category": "Normal",
+    "timestamp": "2024-01-11T11:30:00.000Z"
+  }
+]
