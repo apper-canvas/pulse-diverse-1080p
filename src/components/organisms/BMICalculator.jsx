@@ -59,7 +59,7 @@ const BMICalculator = () => {
             }
 
             setLoading(true);
-            setErrors({});
+setErrors({});
 
             try {
                 let heightInCm, weightInKg;
@@ -68,8 +68,10 @@ const BMICalculator = () => {
                     heightInCm = parseFloat(height);
                     weightInKg = parseFloat(weight);
                 } else {
-                    // Convert imperial to metric
-                    const totalInches = parseFloat(heightFeet) * 12 + parseFloat(heightInches);
+                    // Convert imperial to metric - handle optional inches
+                    const feet = parseFloat(heightFeet) || 0;
+                    const inches = parseFloat(heightInches) || 0;
+                    const totalInches = feet * 12 + inches;
                     heightInCm = totalInches * 2.54;
                     weightInKg = parseFloat(weight) * 0.453592;
                 }
@@ -85,16 +87,20 @@ const BMICalculator = () => {
                 setBmi(result.bmi);
                 setCategory(result.category);
 
-                // Save preferences
+                // Save preferences - handle optional inches
+                const savedHeight = unit === 'metric' 
+                    ? heightInCm 
+                    : ((parseFloat(heightFeet) || 0) * 12 + (parseFloat(heightInches) || 0));
+                
                 await userPreferencesService.create({
                     defaultUnit: unit,
-                    savedHeight: unit === 'metric' ? heightInCm : (parseFloat(heightFeet) * 12 + parseFloat(heightInches)),
+                    savedHeight,
                     theme: 'light'
                 });
 
             } catch (error) {
                 setErrors({ general: error.message });
-                // Original didn't show toast for calculation error, keeping behavior.
+                toast.error('Calculation error: ' + error.message);
             } finally {
                 setLoading(false);
             }
@@ -134,7 +140,8 @@ const BMICalculator = () => {
             if (!heightFeet || isNaN(feet) || feet < 3 || feet > 8) {
                 newErrors.heightFeet = 'Feet must be between 3-8';
             }
-            if (!heightInches || isNaN(inches) || inches < 0 || inches >= 12) {
+            // Allow empty inches (defaults to 0), but validate if provided
+            if (heightInches && (isNaN(inches) || inches < 0 || inches >= 12)) {
                 newErrors.heightInches = 'Inches must be between 0-11';
             }
             if (!weight || isNaN(w) || w < 44 || w > 1100) {
@@ -156,9 +163,9 @@ const BMICalculator = () => {
         setBmi(null);
         setCategory('');
         setErrors({});
-    };
+};
 
-const handleSeeResult = async () => {
+    const handleSeeResult = async () => {
         if (!isValidInput()) {
             toast.error('Please enter valid height and weight values');
             return;
@@ -174,8 +181,10 @@ const handleSeeResult = async () => {
                 heightInCm = parseFloat(height);
                 weightInKg = parseFloat(weight);
             } else {
-                // Convert imperial to metric
-                const totalInches = parseFloat(heightFeet) * 12 + parseFloat(heightInches);
+                // Convert imperial to metric - handle optional inches
+                const feet = parseFloat(heightFeet) || 0;
+                const inches = parseFloat(heightInches) || 0;
+                const totalInches = feet * 12 + inches;
                 heightInCm = totalInches * 2.54;
                 weightInKg = parseFloat(weight) * 0.453592;
             }
@@ -191,10 +200,14 @@ const handleSeeResult = async () => {
             setBmi(result.bmi);
             setCategory(result.category);
 
-            // Save preferences
+            // Save preferences - handle optional inches
+            const savedHeight = unit === 'metric' 
+                ? heightInCm 
+                : ((parseFloat(heightFeet) || 0) * 12 + (parseFloat(heightInches) || 0));
+            
             await userPreferencesService.create({
                 defaultUnit: unit,
-                savedHeight: unit === 'metric' ? heightInCm : (parseFloat(heightFeet) * 12 + parseFloat(heightInches)),
+                savedHeight,
                 theme: 'light'
             });
 
@@ -288,9 +301,9 @@ const handleSeeResult = async () => {
                             />
                             <ApperIcon name="Scale" className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         </div>
-                    </FormField>
+</FormField>
 
-{/* See Result Button */}
+                    {/* See Result Button */}
                     <Button
                         onClick={handleSeeResult}
                         disabled={loading}
